@@ -2,13 +2,13 @@
 
 ## Everyday use
 
-After the one-time installation and AI-client setup, double-click Start, open your configured Claude Desktop or Codex desktop app, and speak or type your request. Voice input depends on your client or OS dictation; the dashboard does not record audio.
+Double-click Start; missing components and detected AI-client connections are prepared automatically. Then, open your configured Claude Desktop or Codex desktop app, and speak or type your request. Voice input depends on your client or OS dictation; the dashboard does not record audio.
 
 Describe your indicator idea in plain language. The AI can read chart context, preserve your existing Pine source, write a new version, compile it, inspect errors and refine it with you. This keeps development and feedback close together and supports quick iteration. Verify calculations before relying on the result.
 
 ChatGPT can help with ideas and code review, but this source package does not include a direct ChatGPT connector. See the README's client references for connection options.
 
-Double-click `START_IANTIAI_TRADINGVIEW.vbs`. TradingView starts automatically. **Start TradingView** is a fallback if you close the TradingView app while keeping the dashboard open. **Logs** opens the current session's diagnostic folder. No MCP shell is required.
+Double-click `START.bat`. TradingView starts automatically. **Start TradingView** is a fallback if you close the TradingView app while keeping the dashboard open. **Logs** opens the current session's diagnostic folder. No MCP shell is required.
 
 The footer shows only the website link: `https://iantiai.com/`. Social and repository links belong on the website.
 
@@ -64,7 +64,7 @@ A successful compile checks syntax and compiler acceptance. It is not evidence o
 
 **Port 9222 is occupied:** The starter refuses to continue if the port is not a verified TradingView loopback listener. Check the other application using the port; do not expose the connection through a firewall rule or port forwarding.
 
-**Dependencies cannot be found:** Run `scripts/setup.ps1` from the repository. Do not move only the launcher file: `app`, assets, the bridge files and `.vendor` are required.
+**Setup did not finish:** Launch Start again. The first-launch progress window offers a log button on failure. Keep the extracted application folder together: the launcher, `scripts`, `app`, assets and bridge files are required.
 
 **Pine editor source is not available:** Open the Pine editor and wait for it to finish loading. Try `pine_editor_open` before reading. Avoid replacing a script to diagnose a read failure.
 
@@ -95,5 +95,3 @@ Example prompts:
 > List the current chart panes. Set up a two-chart layout with the symbols I provide, preserving any unsaved layout changes first.
 
 All exposed functions and their descriptions are listed in [TOOLS.md](TOOLS.md). Exact parameters are available in [tools.json](tools.json).
-
-

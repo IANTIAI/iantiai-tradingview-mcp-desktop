@@ -16,9 +16,9 @@ A compact Windows dashboard that starts TradingView Desktop with a local connect
 
 ## Your everyday workflow
 
-After the one-time setup:
+**One Click. Easy Use.**
 
-1. **Double-click START_IANTIAI_TRADINGVIEW.vbs.** TradingView and the dashboard start automatically.
+1. **Double-click START.bat.** TradingView and the dashboard start automatically.
 2. **Open your configured AI assistant.** Use Claude Desktop or the Codex desktop app with the local MCP connection.
 3. **Speak or type your request.** Read chart data, develop an indicator, compile it, review errors and refine the result.
 
@@ -28,8 +28,8 @@ Voice is provided by your AI client's supported input mode or operating-system d
 
 | Assistant | How it fits this package |
 | --- | --- |
-| Claude Desktop | Configure the local stdio MCP server once, then use natural-language prompts. This repository is a source package, not a prebuilt Claude desktop extension. |
-| Codex desktop app | Configure the local MCP server once and work directly with the exposed TradingView tools. |
+| Claude Desktop | Start automatically adds the local MCP connection when Claude Desktop is detected. Restart Claude after the first setup. |
+| Codex desktop app | Start automatically adds the local MCP connection when the Codex profile is detected. Restart Codex after the first setup. |
 | ChatGPT | Useful for discussing indicator ideas and reviewing code. This package does not include a direct ChatGPT connector; ChatGPT app integrations require a separate supported MCP connection. |
 
 Product names identify the clients; the illustrations are original explanatory graphics, not screenshots of those products or an endorsement.
@@ -54,49 +54,19 @@ Product names identify the clients; the illustrations are original explanatory g
 
 The current adapter exposes **58 MCP tools**. A tool is a callable function available to a connected AI assistant, not an additional installed program. The dashboard is a launcher and monitor; it is not a chat application or an AI model.
 
-## Requirements
+## Start
 
-- Windows with Windows PowerShell 5.1 and WPF.
-- TradingView Desktop installed for the current user, with a chart open.
-- Node.js with npm, and Git available on `PATH`.
-- An MCP-compatible AI client to use the tools. The dashboard can run without one, but does not issue development prompts itself.
-- An internet connection for initial setup and normal TradingView operations. Existing TradingView subscriptions and data permissions still apply.
+1. Download using **Code → Download ZIP** and extract the folder.
+2. **Double-click START.bat.**
+3. TradingView and the dashboard open automatically. Speak or type in your AI assistant.
 
-## One-time setup
+**One Click. Easy Use.** On the first launch, the branded dashboard automatically prepares missing components and the local MCP connection. You do not need Git, manual PowerShell commands or a separate shell. Subsequent launches open the dashboard directly.
 
-This initial release is a source package. Dependencies and the AI client's MCP connection must be set up once. After that, everyday startup is just a double-click; you do not need to repeat the PowerShell installation or configure the connection on each launch.
+Start reuses a compatible Node.js installation or downloads a verified portable runtime into the application folder. Missing TradingView Desktop is installed through Windows App Installer. Installed Claude Desktop and Codex profiles receive the MCP entry automatically; existing entries and other settings are preserved, with backups before changes.
 
-1. Download this repository using **Code → Download ZIP** and extract it, or clone it with Git.
-2. Open PowerShell in the extracted repository folder and run:
-
-   ```powershell
-   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup.ps1
-   ```
-
-   Setup downloads [tradesdontlie/tradingview-mcp](https://github.com/tradesdontlie/tradingview-mcp) at the pinned commit `c05b8f5755ed8e64ea242de88ddbf46aa24d56a4`, installs its locked dependencies with `npm ci --ignore-scripts`, and performs an offline MCP smoke test.
-
-3. Double-click **START_IANTIAI_TRADINGVIEW.vbs**. The dashboard starts TradingView and its MCP monitor without a separate console window.
-4. Wait for **ACTIVE - ready for MCP** and **Chart connection: connected**.
-5. Configure your AI client's MCP server using the example below.
+Internet access is required for the first setup. Windows may show an installer approval prompt. Your TradingView and AI accounts still require your own sign-in, and an AI client that was open during setup must be restarted once. If an AI client is installed later, see the [advanced guide](docs/ADVANCED.md).
 
 If TradingView was already open without the local connection, save your work and close it normally. The starter waits for it to close and then relaunches it. No TradingView process is force-closed.
-
-## Connect an AI client
-
-The bridge uses the MCP **stdio** transport. Configure your client's equivalent of `mcpServers`:
-
-```json
-{
-  "mcpServers": {
-    "iantiai-tradingview-desktop": {
-      "command": "node",
-      "args": ["C:/path/to/iantiai-tradingview-mcp-desktop/mcp-server.mjs"]
-    }
-  }
-}
-```
-
-Replace the example path with your absolute repository path. Your AI client starts its own MCP server process; the dashboard's monitoring process does not replace that configuration.
 
 ## Example prompts
 
@@ -122,15 +92,9 @@ An active connection and a successful compile do not establish that an indicator
 
 This application is not affiliated with or endorsed by TradingView. TradingView software, accounts and market data are not included. Internal TradingView interfaces can change and break compatibility.
 
-## Verification
+## Technical details
 
-```powershell
-node .\mcp-check.mjs             # Handshake, allowlist and offline Pine analysis
-node .\mcp-check.mjs --live      # Adds read-only checks of the open chart
-node .\scripts\export-tools.mjs # Regenerates tool reference and parameter schemas
-```
-
-For this initial packaging, the adapter handshake, 58-tool catalogue, allowlist and offline Pine analysis were checked against the existing pinned local runtime. The dashboard layout and PowerShell syntax were checked. A fresh installation on another PC and every individual live tool have not been tested.
+Optional configuration and development checks are in the [advanced guide](docs/ADVANCED.md). They are not part of normal startup.
 
 ## Credits
 
@@ -139,6 +103,3 @@ Client setup references: [Claude Desktop local MCP](https://support.claude.com/e
 Created for [IANTIAI](https://iantiai.com/). The MCP functionality is built on [tradesdontlie/tradingview-mcp](https://github.com/tradesdontlie/tradingview-mcp), distributed under its [MIT license and additional notice](THIRD_PARTY_LICENSE.txt). The setup downloads upstream separately; this repository supplies the limited adapter, dashboard and documentation.
 
 Michroma is bundled under the [SIL Open Font License](app/assets/Michroma-OFL.txt). IANTIAI logos and branding remain IANTIAI assets. No separate open-source license for the IANTIAI application code has been assigned in this initial package.
-
-
-
