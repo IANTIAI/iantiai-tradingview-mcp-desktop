@@ -1,4 +1,5 @@
 .vendor/
+_internal/.vendor/
 node_modules/
 Backups/
 *.log

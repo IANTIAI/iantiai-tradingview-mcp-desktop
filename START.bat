@@ -1,2 +1,2 @@
 @echo off
-wscript.exe "%~dp0START_IANTIAI_TRADINGVIEW.vbs"
+wscript.exe "%~dp0_internal\launch.vbs"

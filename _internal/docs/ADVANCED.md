@@ -9,7 +9,7 @@ The bridge uses the MCP **stdio** transport. Configure your client's equivalent 
   "mcpServers": {
     "iantiai-tradingview-desktop": {
       "command": "node",
-      "args": ["C:/path/to/iantiai-tradingview-mcp-desktop/mcp-server.mjs"]
+      "args": ["C:/path/to/iantiai-tradingview-mcp-desktop/_internal/mcp-server.mjs"]
     }
   }
 }
@@ -20,9 +20,9 @@ Replace the example path with your absolute repository path. Your AI client star
 ## Verification
 
 ```powershell
-node .\mcp-check.mjs             # Handshake, allowlist and offline Pine analysis
-node .\mcp-check.mjs --live      # Adds read-only checks of the open chart
-node .\scripts\export-tools.mjs # Regenerates tool reference and parameter schemas
+node .\_internal\mcp-check.mjs             # Handshake, allowlist and offline Pine analysis
+node .\_internal\mcp-check.mjs --live      # Adds read-only checks of the open chart
+node .\_internal\scripts\export-tools.mjs # Regenerates tool reference and parameter schemas
 ```
 
 For this packaging, the adapter handshake, 58-tool catalogue, allowlist and offline Pine analysis were checked against the existing pinned local runtime. The dashboard layout and PowerShell syntax were checked. A fresh installation on another PC and every individual live tool have not been tested.
