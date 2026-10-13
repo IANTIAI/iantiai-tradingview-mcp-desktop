@@ -2,7 +2,7 @@
 
 **Your voice. Your AI. Your TradingView.**
 
-**[Download the Windows user package](https://github.com/IANTIAI/iantiai-tradingview-mcp-desktop/releases/download/v1.2.2/IANTIAI-TradingView-MCP-Desktop.zip)** — extract it and double-click **START.bat**.
+**[Download the Windows user package](https://github.com/IANTIAI/iantiai-tradingview-mcp-desktop/releases/download/v1.3.0/IANTIAI-TradingView-MCP-Desktop.zip)** — extract it and double-click **START.bat**.
 
 Double-click to start the dashboard and TradingView automatically. Use Claude Desktop or the Codex desktop app with MCP to read charts and develop Pine Script indicators through natural-language prompts — including voice input or dictation where your client supports it.
 
@@ -65,7 +65,7 @@ Open **START_HERE.html** for the short user guide. The only launcher is **START.
 2. **Double-click START.bat.**
 3. TradingView and the dashboard open automatically. Speak or type in your AI assistant.
 
-**One Click. Easy Use.** On the first launch, the dashboard connects your detected AI clients; the downloadable Windows package already includes its runtime and MCP components. You do not need Git, manual PowerShell commands or a separate shell. Subsequent launches open the dashboard directly.
+**One Click. Easy Use.** On the first launch, the dashboard installs automatically once and connects your detected AI clients; the downloadable Windows package already includes its runtime and MCP components. You do not need Git, manual PowerShell commands or a separate shell. Subsequent launches only check the saved installation and required files, then open TradingView directly. Installation runs again only if the installation is missing or the folder has moved.
 
 The Windows x64 release bundles the runtime and tested MCP components, so starting it does not download or reinstall them. The source-code download retains an automatic setup fallback. Missing TradingView Desktop is installed through Windows App Installer. Installed Claude Desktop and Codex profiles receive the MCP entry automatically; existing entries and other settings are preserved, with backups before changes.
 

@@ -6,6 +6,7 @@ $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskVendorRoot = Join-Path $taskRoot '.vendor'
 $taskVendor = Join-Path $taskVendorRoot 'tradingview-mcp'
 $taskCommit = 'c05b8f5755ed8e64ea242de88ddbf46aa24d56a4'
+$taskComponentsPresent=Test-Path -LiteralPath (Join-Path $taskVendor 'node_modules\@modelcontextprotocol\sdk\package.json')
 New-Item -ItemType Directory -Path $taskVendorRoot -Force | Out-Null
 function Set-TaskProgress([string]$Message) {
     Write-Output $Message
@@ -29,7 +30,7 @@ function Invoke-TaskNode([string[]]$Arguments) {
     if ($taskProcess.ExitCode -ne 0) { throw "Component command failed ($($taskProcess.ExitCode))." }
 }
 $taskNode = Join-Path $taskVendorRoot 'node\node.exe'
-if (!(Test-Path -LiteralPath $taskNode) -or !(Test-Path -LiteralPath (Join-Path (Split-Path -Parent $taskNode) 'node_modules\npm\bin\npm-cli.js'))) {
+if (!(Test-Path -LiteralPath $taskNode)) {
     $taskCommand = Get-Command node.exe -ErrorAction SilentlyContinue
     $taskNode = $null
     if ($taskCommand) {
@@ -38,7 +39,7 @@ if (!(Test-Path -LiteralPath $taskNode) -or !(Test-Path -LiteralPath (Join-Path 
         if ($LASTEXITCODE -eq 0 -and $taskVersionMatch.Success -and [int]$taskVersionMatch.Groups[1].Value -ge 18 -and (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $taskCommand.Source) 'npm.cmd'))) { $taskNode=$taskCommand.Source }
     }
 }
-if (!$taskNode) {
+if (!$taskNode -or (!$taskComponentsPresent -and !(Test-Path -LiteralPath (Join-Path (Split-Path -Parent $taskNode) 'node_modules\npm\bin\npm-cli.js')))) {
     Set-TaskProgress 'Preparing the local runtime...'
     $taskArchitecture = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64' -or $env:PROCESSOR_ARCHITEW6432 -eq 'ARM64') { 'arm64' } else { 'x64' }
     $taskVersion = 'v24.13.1'
@@ -58,7 +59,6 @@ if (!$taskNode) {
 }
 $env:PATH = (Split-Path -Parent $taskNode) + ';' + $env:PATH
 $taskNpm = Join-Path (Split-Path -Parent $taskNode) 'node_modules\npm\bin\npm-cli.js'
-if (!(Test-Path -LiteralPath $taskNpm)) { throw 'Local runtime is incomplete.' }
 if (!(Test-Path -LiteralPath (Join-Path $taskVendor 'package.json'))) {
     Set-TaskProgress 'Preparing the TradingView connection...'
     $taskArchive = Join-Path $taskVendorRoot 'bridge.zip'
@@ -71,7 +71,10 @@ $taskLockFile=Join-Path $PSScriptRoot 'runtime-package-lock.json'
 $taskLockHash=(Get-FileHash -LiteralPath $taskLockFile -Algorithm SHA256).Hash
 $taskInstalledLock=Join-Path $taskVendorRoot 'runtime-lock.sha256'
 $taskLockMatches=(Test-Path -LiteralPath $taskInstalledLock) -and ((Get-Content -LiteralPath $taskInstalledLock -Raw).Trim() -eq $taskLockHash)
+$taskBridgeLock=Join-Path $taskVendor 'package-lock.json'
+if(!$taskLockMatches -and (Test-Path -LiteralPath $taskBridgeLock)){$taskLockMatches=(Get-FileHash -LiteralPath $taskBridgeLock -Algorithm SHA256).Hash -eq $taskLockHash}
 if (!$taskLockMatches -or !(Test-Path -LiteralPath (Join-Path $taskVendor 'node_modules\@modelcontextprotocol\sdk\package.json'))) {
+    if(!(Test-Path -LiteralPath $taskNpm)){throw 'Connection components need repair. The bundled runtime does not include npm; use a complete Node.js runtime for repair.'}
     Set-TaskProgress 'Installing connection components...'
     Copy-Item -LiteralPath $taskLockFile -Destination (Join-Path $taskVendor 'package-lock.json') -Force
     Push-Location $taskVendor
@@ -91,4 +94,5 @@ if (!$taskTvPackage -and !$taskTvExe) {
 if($Verify){Set-TaskProgress 'Checking the connection components...';Invoke-TaskNode @((Join-Path $taskRoot 'mcp-check.mjs'))}
 if (!$SkipClientConfiguration) { & (Join-Path $PSScriptRoot 'configure-clients.ps1') -Root $taskRoot -Node $taskNode }
 @{ version='1.2'; node=$taskNode; commit=$taskCommit; dependencyLock=$taskLockHash; clientsConfigured=(!$SkipClientConfiguration) } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskVendorRoot 'ready.json') -Encoding utf8
+if(!$SkipClientConfiguration){@{version='1.3';root=$taskRoot;node=$taskNode;installed=$true} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskVendorRoot 'installed.json') -Encoding utf8}
 Set-TaskProgress 'Ready. Restart your AI client if it was open during setup.'
