@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-label="Claude Desktop and Codex local MCP workflows; ChatGPT for ideas and code review">
+<defs><linearGradient id="line"><stop stop-color="#00e5a0"/><stop offset="1" stop-color="#3caaff"/></linearGradient></defs>
+<rect width="1200" height="440" rx="20" fill="#000"/>
+<g font-family="Arial, sans-serif"><text x="48" y="48" fill="#00e5a0" font-size="16" letter-spacing="3">IANTIAI · TRADINGVIEW MCP DESKTOP</text><text x="48" y="100" fill="#fff" font-size="38" font-weight="bold">Your AI. Your chart. Your next indicator.</text>
+<g fill="#0d1511" stroke="#244335"><rect x="48" y="142" width="352" height="222" rx="14"/><rect x="424" y="142" width="352" height="222" rx="14"/><rect x="800" y="142" width="352" height="222" rx="14"/></g>
+<g fill="none" stroke-width="2"><rect x="72" y="166" width="38" height="30" rx="8" stroke="#d6a183"/><path d="M81 196v7l9-7" stroke="#d6a183"/><path d="M458 172l-10 9 10 9m20-18l10 9-10 9m-10-22l-4 25" stroke="#00e5a0"/><rect x="824" y="166" width="38" height="30" rx="8" stroke="#fff"/><path d="M833 196v7l9-7" stroke="#fff"/></g>
+<g fill="#fff" font-size="29" font-weight="bold"><text x="72" y="246">Claude Desktop</text><text x="448" y="246">Codex</text><text x="824" y="246">ChatGPT</text></g>
+<g fill="#9fb5a8" font-size="17"><text x="72" y="279">Local MCP client</text><text x="72" y="309">Chart data + Pine development</text><text x="448" y="279">Local MCP client</text><text x="448" y="309">Read, write, compile, refine</text><text x="824" y="279">Ideas + code review</text><text x="824" y="309">Direct connector not included</text></g>
+<path d="M48 389h1104" stroke="url(#line)"/><text x="48" y="420" fill="#91a79b" font-size="14">Configure once. Use text or supported voice input. Product names indicate workflow options, not affiliation.</text></g></svg>

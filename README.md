@@ -1,10 +1,38 @@
 # IANTIAI TradingView MCP Desktop
 
-**Connect your AI assistant to TradingView Desktop. Read chart data. Develop Pine Script indicators.**
+**Your voice. Your AI. Your TradingView.**
+
+Double-click to start the dashboard and TradingView automatically. Use Claude Desktop or the Codex desktop app with MCP to read charts and develop Pine Script indicators through natural-language prompts — including voice input or dictation where your client supports it.
+
+**Describe your idea. Let your AI write, compile, debug and refine your indicator directly in TradingView.** Keep the editor, compiler feedback and chart in one connected workflow to iterate quickly.
 
 A compact Windows dashboard that starts TradingView Desktop with a local connection and checks the limited MCP bridge in the background. The interface uses IANTIAI branding, an English UI, and a console-free launcher.
 
 [Website](https://iantiai.com/) · [All 58 MCP tools](docs/TOOLS.md) · [User guide](docs/GUIDE.md)
+
+![Claude Desktop, Codex and ChatGPT workflow overview](docs/images/ai-assistants.svg)
+
+![Double-click, describe your idea, develop in TradingView](docs/images/quick-start.svg)
+
+## Your everyday workflow
+
+After the one-time setup:
+
+1. **Double-click START_IANTIAI_TRADINGVIEW.vbs.** TradingView and the dashboard start automatically.
+2. **Open your configured AI assistant.** Use Claude Desktop or the Codex desktop app with the local MCP connection.
+3. **Speak or type your request.** Read chart data, develop an indicator, compile it, review errors and refine the result.
+
+Voice is provided by your AI client's supported input mode or operating-system dictation, not by this dashboard. A separate shell is unnecessary for everyday use.
+
+## Choose your AI assistant
+
+| Assistant | How it fits this package |
+| --- | --- |
+| Claude Desktop | Configure the local stdio MCP server once, then use natural-language prompts. This repository is a source package, not a prebuilt Claude desktop extension. |
+| Codex desktop app | Configure the local MCP server once and work directly with the exposed TradingView tools. |
+| ChatGPT | Useful for discussing indicator ideas and reviewing code. This package does not include a direct ChatGPT connector; ChatGPT app integrations require a separate supported MCP connection. |
+
+Product names identify the clients; the illustrations are original explanatory graphics, not screenshots of those products or an endorsement.
 
 ![IANTIAI TradingView MCP Desktop dashboard](docs/images/dashboard.png)
 
@@ -34,7 +62,9 @@ The current adapter exposes **58 MCP tools**. A tool is a callable function avai
 - An MCP-compatible AI client to use the tools. The dashboard can run without one, but does not issue development prompts itself.
 - An internet connection for initial setup and normal TradingView operations. Existing TradingView subscriptions and data permissions still apply.
 
-## Install and start
+## One-time setup
+
+This initial release is a source package. Dependencies and the AI client's MCP connection must be set up once. After that, everyday startup is just a double-click; you do not need to repeat the PowerShell installation or configure the connection on each launch.
 
 1. Download this repository using **Code → Download ZIP** and extract it, or clone it with Git.
 2. Open PowerShell in the extracted repository folder and run:
@@ -78,6 +108,8 @@ Replace the example path with your absolute repository path. Your AI client star
 
 > Inspect this indicator's inputs and plotted values, then compare its calculation with the expected formula on several bars.
 
+> Develop a Pine Script indicator from this idea. Back up the current source, compile the new version, explain any errors, and refine it with me.
+
 See the [guide](docs/GUIDE.md) for a full development workflow and troubleshooting, and the [tool reference](docs/TOOLS.md) for every function.
 
 ## Connection and operating limits
@@ -101,6 +133,8 @@ node .\scripts\export-tools.mjs # Regenerates tool reference and parameter schem
 For this initial packaging, the adapter handshake, 58-tool catalogue, allowlist and offline Pine analysis were checked against the existing pinned local runtime. The dashboard layout and PowerShell syntax were checked. A fresh installation on another PC and every individual live tool have not been tested.
 
 ## Credits
+
+Client setup references: [Claude Desktop local MCP](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), [Codex MCP configuration](https://developers.openai.com/codex/mcp/), and [ChatGPT MCP app integration](https://developers.openai.com/plugins/build/app-quickstart).
 
 Created for [IANTIAI](https://iantiai.com/). The MCP functionality is built on [tradesdontlie/tradingview-mcp](https://github.com/tradesdontlie/tradingview-mcp), distributed under its [MIT license and additional notice](THIRD_PARTY_LICENSE.txt). The setup downloads upstream separately; this repository supplies the limited adapter, dashboard and documentation.
 

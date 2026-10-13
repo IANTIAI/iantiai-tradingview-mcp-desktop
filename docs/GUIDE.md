@@ -2,6 +2,12 @@
 
 ## Everyday use
 
+After the one-time installation and AI-client setup, double-click Start, open your configured Claude Desktop or Codex desktop app, and speak or type your request. Voice input depends on your client or OS dictation; the dashboard does not record audio.
+
+Describe your indicator idea in plain language. The AI can read chart context, preserve your existing Pine source, write a new version, compile it, inspect errors and refine it with you. This keeps development and feedback close together and supports quick iteration. Verify calculations before relying on the result.
+
+ChatGPT can help with ideas and code review, but this source package does not include a direct ChatGPT connector. See the README's client references for connection options.
+
 Double-click `START_IANTIAI_TRADINGVIEW.vbs`. TradingView starts automatically. **Start TradingView** is a fallback if you close the TradingView app while keeping the dashboard open. **Logs** opens the current session's diagnostic folder. No MCP shell is required.
 
 The footer shows only the website link: `https://iantiai.com/`. Social and repository links belong on the website.
