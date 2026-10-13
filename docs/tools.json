@@ -1,0 +1,1064 @@
+[
+  {
+    "name": "tv_discover",
+    "description": "Report which known TradingView API paths are available and their methods",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "tv_ui_state",
+    "description": "Get current UI state: which panels are open, what buttons are visible/enabled/disabled",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_get_state",
+    "description": "Get current chart state (symbol, timeframe, chart type, indicators)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_set_symbol",
+    "description": "Change the chart symbol",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "Symbol to set (e.g., BTCUSD, AAPL, ES1!, NYMEX:CL1!)"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_set_timeframe",
+    "description": "Change the chart timeframe/resolution",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "timeframe": {
+          "type": "string",
+          "description": "Timeframe (e.g., 1, 5, 15, 60, D, W, M)"
+        }
+      },
+      "required": [
+        "timeframe"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_set_type",
+    "description": "Change chart type",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "chart_type": {
+          "type": "string",
+          "description": "Chart type: Bars(0), Candles(1), Line(2), Area(3), Renko(4), Kagi(5), PointAndFigure(6), LineBreak(7), HeikinAshi(8), HollowCandles(9) — pass name or number"
+        }
+      },
+      "required": [
+        "chart_type"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_manage_indicator",
+    "description": "Add or remove an indicator/study on the chart",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "add",
+            "remove"
+          ],
+          "description": "Action: add or remove"
+        },
+        "indicator": {
+          "description": "Full indicator name (required for add): \"Relative Strength Index\", \"MACD\", \"Volume\", \"Moving Average\", \"Bollinger Bands\", \"Moving Average Exponential\". Short names like RSI/EMA do NOT work. Not needed for remove.",
+          "type": "string"
+        },
+        "entity_id": {
+          "description": "Entity ID (from chart_get_state). Required for remove.",
+          "type": "string"
+        },
+        "inputs": {
+          "description": "JSON string of input overrides for the indicator (e.g., '{\"length\": 20}')",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_get_visible_range",
+    "description": "Get the visible date range (unix timestamps) and bars range on the chart",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_set_visible_range",
+    "description": "Zoom the chart to a specific date range (unix timestamps)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "number",
+          "description": "Start of range (unix timestamp in seconds)"
+        },
+        "to": {
+          "type": "number",
+          "description": "End of range (unix timestamp in seconds)"
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "chart_scroll_to_date",
+    "description": "Jump the chart view to center on a specific date",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "ISO date string (e.g., \"2024-01-15\") or unix timestamp as a string"
+        }
+      },
+      "required": [
+        "date"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "symbol_info",
+    "description": "Get detailed metadata about the current symbol (name, exchange, type, description)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "symbol_search",
+    "description": "Search for symbols by name or keyword",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Search query (e.g., \"AAPL\", \"crude oil\", \"ES\")"
+        },
+        "type": {
+          "description": "Filter by type (e.g., \"stock\", \"futures\", \"crypto\", \"forex\")",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_get_source",
+    "description": "Get current Pine Script source code from the editor",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_set_source",
+    "description": "Set Pine Script source code in the editor",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Pine Script source code to inject"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_compile",
+    "description": "Compile / add the current Pine Script to the chart",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_get_errors",
+    "description": "Get Pine Script compilation errors from Monaco markers",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_save",
+    "description": "Save the current Pine Script (Ctrl+S)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_get_console",
+    "description": "Read Pine Script console/log output (compile messages, log.info(), errors)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_smart_compile",
+    "description": "Intelligent compile: detects button, compiles, checks errors, reports study changes",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_new",
+    "description": "Create a new blank Pine Script",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "indicator",
+            "strategy",
+            "library"
+          ],
+          "description": "Type of script to create"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_open",
+    "description": "Open a saved Pine Script by name",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the saved script to open (case-insensitive match)"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_list_scripts",
+    "description": "List saved Pine Scripts",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_analyze",
+    "description": "Run static analysis on Pine Script code WITHOUT compiling — catches array out-of-bounds, unguarded array.first()/last(), bad loop bounds, and implicit bool casts. Works offline, no TradingView connection needed.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Pine Script source code to analyze"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_check",
+    "description": "Compile Pine Script via TradingView's server API without needing the chart open. Returns compilation errors/warnings. Useful for validating code before injecting into the chart.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Pine Script source code to compile/validate"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_ohlcv",
+    "description": "Get OHLCV bar data from the chart. Use summary=true for compact stats instead of all bars (saves context).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "description": "Number of bars to retrieve (max 500, default 100)",
+          "type": "number"
+        },
+        "summary": {
+          "description": "Return summary stats (high, low, open, close, avg volume, range) instead of all bars — much smaller output",
+          "type": "boolean"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_indicator",
+    "description": "Get indicator/study info and input values",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "description": "Study entity ID (from chart_get_state)"
+        }
+      },
+      "required": [
+        "entity_id"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_strategy_results",
+    "description": "Get strategy performance metrics from Strategy Tester. Auto-opens the panel and auto-unhides a hidden strategy (TradingView never computes reports for hidden strategies); result includes unhidden_strategies when that happened.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_trades",
+    "description": "Get trade list from Strategy Tester. Auto-opens the panel and auto-unhides a hidden strategy.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "max_trades": {
+          "description": "Maximum trades to return",
+          "type": "number"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_equity",
+    "description": "Get equity curve data from Strategy Tester",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "quote_get",
+    "description": "Get real-time quote data for a symbol (price, OHLC, volume). If symbol is provided and differs from the current chart, the chart is briefly switched to fetch the quote and then restored — adds ~1-2s and serializes parallel calls.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "description": "Symbol to quote (blank = current chart symbol). Non-blank values cause a chart switch + restore.",
+          "type": "string"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "depth_get",
+    "description": "Get order book / DOM (Depth of Market) data from the chart",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_pine_lines",
+    "description": "Read horizontal price levels drawn by Pine Script indicators (line.new). Returns deduplicated price levels per study. Use study_filter to target a specific indicator.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "study_filter": {
+          "description": "Substring to match study name (e.g., \"Profiler\", \"NY Levels\"). Omit for all.",
+          "type": "string"
+        },
+        "verbose": {
+          "description": "Return raw line data with IDs, coordinates, colors (default false — returns only unique price levels)",
+          "type": "boolean"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_pine_labels",
+    "description": "Read text labels drawn by Pine Script indicators (label.new). Returns text and price pairs. Use study_filter to target a specific indicator.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "study_filter": {
+          "description": "Substring to match study name. Omit for all.",
+          "type": "string"
+        },
+        "max_labels": {
+          "description": "Max labels per study (default 50). Set higher if you need all.",
+          "type": "number"
+        },
+        "verbose": {
+          "description": "Return raw label data with IDs, colors, positions (default false — returns only text + price)",
+          "type": "boolean"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_pine_tables",
+    "description": "Read table data drawn by Pine Script indicators (table.new). Returns formatted text rows per table. Use study_filter to target a specific indicator.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "study_filter": {
+          "description": "Substring to match study name. Omit for all.",
+          "type": "string"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_pine_boxes",
+    "description": "Read box/zone boundaries drawn by Pine Script indicators (box.new). Returns deduplicated {high, low} price zones. Use study_filter to target a specific indicator.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "study_filter": {
+          "description": "Substring to match study name. Omit for all.",
+          "type": "string"
+        },
+        "verbose": {
+          "description": "Return all boxes with IDs and coordinates (default false — returns unique price zones)",
+          "type": "boolean"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "data_get_study_values",
+    "description": "Get current indicator values from the data window for all visible studies (RSI, MACD, Bollinger Bands, EMAs, custom indicators with plot()).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "capture_screenshot",
+    "description": "Take a screenshot of the TradingView chart",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "region": {
+          "description": "Region to capture: full, chart, strategy_tester (default full)",
+          "type": "string"
+        },
+        "filename": {
+          "description": "Custom filename (without extension)",
+          "type": "string"
+        },
+        "method": {
+          "description": "Capture method: cdp (Page.captureScreenshot) or api (chartWidgetCollection.takeScreenshot) (default cdp)",
+          "type": "string"
+        },
+        "wait_for_render": {
+          "description": "Wait for the chart canvas to stabilize before capturing. Use after chart_set_symbol or chart_set_timeframe to avoid stale frames.",
+          "type": "boolean"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indicator_set_inputs",
+    "description": "Change indicator/study input values (e.g., length, source, period)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "description": "Entity ID of the study (from chart_get_state)"
+        },
+        "inputs": {
+          "type": "string",
+          "description": "JSON string of input overrides, e.g. '{\"length\": 50, \"source\": \"close\"}'. Keys are input IDs, values are the new values."
+        }
+      },
+      "required": [
+        "entity_id",
+        "inputs"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indicator_toggle_visibility",
+    "description": "Show or hide an indicator/study on the chart",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "description": "Entity ID of the study (from chart_get_state)"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "true to show, false to hide"
+        }
+      },
+      "required": [
+        "entity_id",
+        "visible"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indicator_search",
+    "description": "Search TradingView's Indicators dialog for indicators, strategies, and community/public scripts by keyword. Returns matching titles grouped by section (Technicals, Community, My scripts, etc.).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Search keyword, e.g. \"RSI\", \"supertrend\", \"order block\""
+        },
+        "limit": {
+          "description": "Max results to return (default 25)",
+          "type": "number"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indicator_add",
+    "description": "Search the Indicators dialog and add a result to the chart by name. Works for strategies and community scripts, not just built-ins. Returns the new study entity_id.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Search keyword to find the indicator/strategy"
+        },
+        "match": {
+          "description": "Exact title to add (default: the query). Case-insensitive; falls back to first title containing it.",
+          "type": "string"
+        },
+        "section": {
+          "description": "Restrict to a section: \"Technicals\", \"Community\", \"My scripts\", etc.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "tab_list",
+    "description": "List all open TradingView chart tabs",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "tab_new",
+    "description": "Open a new chart tab. Optionally pick what to load in it: layout \"new\" creates a named blank layout, or pass a saved layout name to open it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "layout": {
+          "description": "\"new\" for a blank new layout, or a saved layout name (substring match). Omit to leave the tab on the layout picker.",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name for the new layout (used with layout: \"new\"; default \"New layout\")",
+          "type": "string"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "layout_new",
+    "description": "Create a new named blank chart layout (opens in a new tab)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Layout name (default \"New layout\")",
+          "type": "string"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "tab_switch",
+    "description": "Switch to a chart tab by index",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "number",
+          "description": "Tab index (0-based, from tab_list)"
+        }
+      },
+      "required": [
+        "index"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "layout_list",
+    "description": "List saved chart layouts",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "layout_switch",
+    "description": "Switch to a saved chart layout by name or ID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name or ID of the layout to switch to"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "ui_find_element",
+    "description": "Find UI elements by text, aria-label, or CSS selector and return their positions",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Text content, aria-label value, or CSS selector to search for"
+        },
+        "strategy": {
+          "description": "Search strategy (default: text)",
+          "type": "string",
+          "enum": [
+            "text",
+            "aria-label",
+            "css"
+          ]
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "watchlist_get",
+    "description": "Get all symbols from the current TradingView watchlist with last price, change, and change%",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "watchlist_add",
+    "description": "Add a symbol to the TradingView watchlist",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "Symbol to add (e.g., AAPL, BTCUSD, ES1!, NYMEX:CL1!)"
+        }
+      },
+      "required": [
+        "symbol"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "watchlist_add_bulk",
+    "description": "Add multiple symbols to the TradingView watchlist",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Symbols to add (e.g., [\"AAPL\", \"ES1!\", \"NYMEX:CL1!\"])"
+        }
+      },
+      "required": [
+        "symbols"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "watchlist_remove",
+    "description": "Remove one or more symbols from the active TradingView watchlist",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Symbols to remove — bare (AAPL) or full (NASDAQ:AAPL)"
+        }
+      },
+      "required": [
+        "symbols"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pane_list",
+    "description": "List all chart panes in the current layout with their symbols and active state",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pane_set_layout",
+    "description": "Change the chart grid layout (e.g., single, 2x2, 2h, 3v)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "layout": {
+          "type": "string",
+          "description": "Layout code: s (single), 2h, 2v, 2-1, 1-2, 3h, 3v, 4 (2x2), 6, 8. Also accepts: single, 2x1, 1x2, 2x2, quad"
+        }
+      },
+      "required": [
+        "layout"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pane_focus",
+    "description": "Focus a specific chart pane by index (0-based)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "number",
+          "description": "Pane index (0-based, from pane_list)"
+        }
+      },
+      "required": [
+        "index"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pane_set_symbol",
+    "description": "Set the symbol on a specific pane by index",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "number",
+          "description": "Pane index (0-based)"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol to set (e.g., NQ1!, ES1!, AAPL)"
+        }
+      },
+      "required": [
+        "index",
+        "symbol"
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "tv_health_check",
+    "description": "Read-only check of the local TradingView chart connection; no update check or app restart.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "pine_editor_open",
+    "description": "Open the Pine editor only; no trading or broker panel access.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  }
+]

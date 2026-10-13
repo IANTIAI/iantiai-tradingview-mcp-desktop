@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="250" viewBox="0 0 1000 250">
+<rect width="1000" height="250" rx="16" fill="#000"/>
+<g font-family="Arial, sans-serif" text-anchor="middle">
+<text x="500" y="38" fill="#00e5a0" font-size="16">IANTIAI · TRADINGVIEW MCP DESKTOP</text>
+<g fill="#0d1210" stroke="#258335"><rect x="35" y="75" width="250" height="100" rx="10"/><rect x="375" y="75" width="250" height="100" rx="10"/><rect x="715" y="75" width="250" height="100" rx="10"/></g>
+<g fill="#f5f7fa" font-size="22"><text x="160" y="115">AI assistant</text><text x="500" y="115">Limited MCP adapter</text><text x="840" y="115">TradingView Desktop</text></g>
+<g fill="#91a79b" font-size="14"><text x="160" y="146">Your MCP-compatible client</text><text x="500" y="146">58 exposed functions</text><text x="840" y="146">Open chart and Pine editor</text></g>
+<g fill="#00e5a0" font-size="28"><text x="330" y="126">↔</text><text x="670" y="126">↔</text></g>
+<g fill="#91a79b" font-size="12"><text x="330" y="163">stdio</text><text x="670" y="163">127.0.0.1:9222</text><text x="500" y="215">The dashboard starts TradingView and checks a separate MCP monitor in the background.</text></g>
+</g></svg>
+
