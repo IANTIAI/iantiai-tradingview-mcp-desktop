@@ -57,7 +57,17 @@ $taskCandidates = @(
     (Join-Path $env:ProgramFiles 'TradingView\TradingView.exe')
 )
 $taskExe = $taskCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1
-if (!$taskExe) { throw 'TradingView Desktop executable not found for the current Windows user.' }
+if (!$taskExe) {
+    $taskWinget = Get-Command winget.exe -ErrorAction SilentlyContinue
+    if (!$taskWinget) { throw 'TradingView Desktop is missing and Windows App Installer is unavailable.' }
+    Write-Output 'Installing TradingView Desktop automatically...'
+    $taskInstall = Start-Process -FilePath $taskWinget.Source -ArgumentList @('install','--id','TradingView.TradingViewDesktop','--exact','--source','winget','--silent','--accept-package-agreements','--accept-source-agreements','--disable-interactivity') -WindowStyle Hidden -Wait -PassThru
+    if ($taskInstall.ExitCode -ne 0) { throw 'TradingView installation did not complete.' }
+    $taskPackage = Get-AppxPackage -Name 'TradingView.Desktop' -ErrorAction SilentlyContinue | Sort-Object Version -Descending | Select-Object -First 1
+    $taskCandidates = @($(if ($taskPackage) { Join-Path $taskPackage.InstallLocation 'TradingView.exe' }), (Join-Path $env:LOCALAPPDATA 'TradingView\TradingView.exe'), (Join-Path $env:ProgramFiles 'TradingView\TradingView.exe'))
+    $taskExe = $taskCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1
+    if (!$taskExe) { throw 'TradingView executable could not be located after installation.' }
+}
 $taskInstalledExe = $taskExe
 $taskRegisteredPackage = $taskPackage -and
     ([IO.Path]::GetFullPath($taskInstalledExe) -eq [IO.Path]::GetFullPath((Join-Path $taskPackage.InstallLocation 'TradingView.exe'))) -and
@@ -106,4 +116,3 @@ for ($taskAttempt = 0; $taskAttempt -lt 20; $taskAttempt++) {
     }
 }
 throw 'TradingView did not expose CDP. For an MSIX installation, save/close Desktop and retry with -UseLocalPackageCopy. No process was force-closed.'
-

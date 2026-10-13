@@ -92,8 +92,8 @@ $taskWindow.Add_Closed({
     Set-Content -LiteralPath ($taskStatus + '.stop') -Value 'stop'
     if ($script:taskStarter -and !$script:taskStarter.HasExited) { Stop-Process -Id $script:taskStarter.Id -ErrorAction SilentlyContinue }
 })
-Start-TaskMonitor
 if (!$NoAutoStart) { Start-TaskDesktop }
+Start-TaskMonitor
 $taskTimer.Start()
 $taskWindow.ShowDialog() | Out-Null
 

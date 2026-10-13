@@ -1,6 +1,16 @@
 $ErrorActionPreference='Stop'
 Add-Type -AssemblyName PresentationFramework
 $taskRoot=Split-Path -Parent $PSScriptRoot
+$taskBundledNode=Join-Path $taskRoot '.vendor\node\node.exe'
+$taskFastNode=$null
+if(Test-Path -LiteralPath $taskBundledNode){$taskFastNode=$taskBundledNode}
+else{$taskNodeCommand=Get-Command node.exe -ErrorAction SilentlyContinue;if($taskNodeCommand){$taskFastNode=$taskNodeCommand.Source}}
+if($taskFastNode -and (Test-Path -LiteralPath (Join-Path $taskRoot '.vendor\tradingview-mcp\node_modules\@modelcontextprotocol\sdk\package.json'))) {
+    $env:PATH=(Split-Path -Parent $taskFastNode)+';'+$env:PATH
+    try { & (Join-Path $PSScriptRoot 'configure-clients.ps1') -Root $taskRoot -Node $taskFastNode } catch { $_ | Out-File -LiteralPath (Join-Path $taskRoot '.vendor\client-setup.log') }
+    & (Join-Path $taskRoot 'app\TradingView-Dashboard.ps1')
+    exit
+}
 $taskReadyFile=Join-Path $taskRoot '.vendor\ready.json'
 $taskReady=$null
 if(Test-Path -LiteralPath $taskReadyFile){try{$taskReady=Get-Content -LiteralPath $taskReadyFile -Raw|ConvertFrom-Json}catch{}}

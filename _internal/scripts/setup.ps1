@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$ProgressFile, [switch]$SkipClientConfiguration)
+param([string]$ProgressFile, [switch]$SkipClientConfiguration, [switch]$Verify)
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $taskRoot = Split-Path -Parent $PSScriptRoot
@@ -29,7 +29,7 @@ function Invoke-TaskNode([string[]]$Arguments) {
     if ($taskProcess.ExitCode -ne 0) { throw "Component command failed ($($taskProcess.ExitCode))." }
 }
 $taskNode = Join-Path $taskVendorRoot 'node\node.exe'
-if (!(Test-Path -LiteralPath $taskNode)) {
+if (!(Test-Path -LiteralPath $taskNode) -or !(Test-Path -LiteralPath (Join-Path (Split-Path -Parent $taskNode) 'node_modules\npm\bin\npm-cli.js'))) {
     $taskCommand = Get-Command node.exe -ErrorAction SilentlyContinue
     $taskNode = $null
     if ($taskCommand) {
@@ -51,7 +51,9 @@ if (!$taskNode) {
     if ((Get-FileHash -LiteralPath $taskArchive -Algorithm SHA256).Hash -ne $taskChecksumMatch.Groups[1].Value) { throw 'Runtime checksum verification failed.' }
     $taskExtract = Join-Path $taskVendorRoot ('runtime-' + [guid]::NewGuid().ToString('N'))
     Expand-Archive -LiteralPath $taskArchive -DestinationPath $taskExtract
-    Copy-Item -LiteralPath (Join-Path $taskExtract "node-$taskVersion-win-$taskArchitecture") -Destination (Join-Path $taskVendorRoot 'node') -Recurse -Force
+    $taskNodeDestination=Join-Path $taskVendorRoot 'node'
+    New-Item -ItemType Directory -Path $taskNodeDestination -Force|Out-Null
+    Get-ChildItem -LiteralPath (Join-Path $taskExtract "node-$taskVersion-win-$taskArchitecture") | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $taskNodeDestination -Recurse -Force }
     $taskNode = Join-Path $taskVendorRoot 'node\node.exe'
 }
 $env:PATH = (Split-Path -Parent $taskNode) + ';' + $env:PATH
@@ -86,8 +88,7 @@ if (!$taskTvPackage -and !$taskTvExe) {
     & $taskWinget.Source install --id TradingView.TradingViewDesktop --exact --source winget --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
     if ($LASTEXITCODE -ne 0) { throw 'TradingView installation did not complete.' }
 }
-Set-TaskProgress 'Checking the connection components...'
-Invoke-TaskNode @((Join-Path $taskRoot 'mcp-check.mjs'))
+if($Verify){Set-TaskProgress 'Checking the connection components...';Invoke-TaskNode @((Join-Path $taskRoot 'mcp-check.mjs'))}
 if (!$SkipClientConfiguration) { & (Join-Path $PSScriptRoot 'configure-clients.ps1') -Root $taskRoot -Node $taskNode }
 @{ version='1.2'; node=$taskNode; commit=$taskCommit; dependencyLock=$taskLockHash; clientsConfigured=(!$SkipClientConfiguration) } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskVendorRoot 'ready.json') -Encoding utf8
 Set-TaskProgress 'Ready. Restart your AI client if it was open during setup.'
