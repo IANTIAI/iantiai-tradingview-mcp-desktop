@@ -1,8 +1,8 @@
-# IANTIAI TradingView MCP Desktop
+# IANTIAI TradingView MCP Desktop 1.0 Final
 
 **Your voice. Your AI. Your TradingView.**
 
-**[Download the Windows user package](https://github.com/IANTIAI/iantiai-tradingview-mcp-desktop/releases/download/v1.3.0/IANTIAI-TradingView-MCP-Desktop.zip)** — extract it and double-click **START.bat**.
+**[Download the Windows user package](https://github.com/IANTIAI/iantiai-tradingview-mcp-desktop/releases/download/v1.0/IANTIAI-TradingView-MCP-Desktop-1.0-Final.zip)** — extract it and double-click **START.bat**.
 
 Double-click to start the dashboard and TradingView automatically. Use Claude Desktop or the Codex desktop app with MCP to read charts and develop Pine Script indicators through natural-language prompts — including voice input or dictation where your client supports it.
 
