@@ -16,6 +16,7 @@ $taskLog=Join-Path $taskRoot '.vendor\setup.log'
 $taskDashboardSource=Get-Content -LiteralPath (Join-Path $taskRoot 'app\TradingView-Dashboard.ps1') -Raw
 [xml]$taskXml=[regex]::Match($taskDashboardSource,"(?s)\[xml\]\`$taskXaml = @'\r?\n(.*?)\r?\n'@").Groups[1].Value
 $taskWindow=[Windows.Markup.XamlReader]::Load((New-Object Xml.XmlNodeReader $taskXml))
+& (Join-Path $PSScriptRoot 'set-app-icon.ps1') -Root $taskRoot -Window $taskWindow
 $taskAssets=Join-Path $taskRoot 'app\assets'
 $taskMap=@{LogoIan='brand-ian.png';LogoTiai='brand-tiai.png';TagThink='brand-think.png';TagCode='brand-code.png';TagTrade='brand-trade.png';TagLive='brand-live.png'}
 foreach($taskKey in $taskMap.Keys){$taskWindow.FindName($taskKey).Source=[Windows.Media.Imaging.BitmapImage]::new([uri](Join-Path $taskAssets $taskMap[$taskKey]))}

@@ -93,6 +93,7 @@ if (!$taskTvPackage -and !$taskTvExe) {
 }
 if($Verify){Set-TaskProgress 'Checking the connection components...';Invoke-TaskNode @((Join-Path $taskRoot 'mcp-check.mjs'))}
 if (!$SkipClientConfiguration) { & (Join-Path $PSScriptRoot 'configure-clients.ps1') -Root $taskRoot -Node $taskNode }
+if (!$SkipClientConfiguration) { & (Join-Path $PSScriptRoot 'set-app-icon.ps1') -Root $taskRoot -CreateShortcut }
 @{ version='1.2'; node=$taskNode; commit=$taskCommit; dependencyLock=$taskLockHash; clientsConfigured=(!$SkipClientConfiguration) } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskVendorRoot 'ready.json') -Encoding utf8
 if(!$SkipClientConfiguration){@{version='1.0';root=$taskRoot;node=$taskNode;installed=$true} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskVendorRoot 'installed.json') -Encoding utf8}
 Set-TaskProgress 'Ready. Restart your AI client if it was open during setup.'

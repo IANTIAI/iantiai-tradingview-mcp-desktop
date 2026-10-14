@@ -36,6 +36,7 @@ foreach ($taskFile in @('mcp-server.mjs','START_TRADINGVIEW_MCP.ps1')) {
 </Window>
 '@
 $taskWindow = [Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $taskXaml))
+& (Join-Path $BridgeRoot 'scripts\set-app-icon.ps1') -Root $BridgeRoot -Window $taskWindow
 $taskControls = @{}
 foreach ($taskName in @('Overall','Desktop','Bridge','Connection','Start','Logs','Details','Website')) { $taskControls[$taskName] = $taskWindow.FindName($taskName) }
 $taskAssets = Join-Path $PSScriptRoot 'assets'
