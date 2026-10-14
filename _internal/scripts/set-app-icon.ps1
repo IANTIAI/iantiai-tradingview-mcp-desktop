@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$Root, $Window, [switch]$CreateShortcut)
 $ErrorActionPreference='Stop'
-$taskIcon=Join-Path $Root 'app\assets\app-icon.ico'
+$taskIcon=Join-Path $Root 'app\assets\iantiai-app.ico'
 if(!(Test-Path -LiteralPath $taskIcon)){throw 'Application icon is missing.'}
 if($Window){
     if(!('IantiaiWindowIdentity' -as [type])){
