@@ -3,6 +3,7 @@
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { chartHealth } from './chart-health.mjs';
 
 const directory = dirname(fileURLToPath(import.meta.url));
 const upstream = resolve(process.env.IANTIAI_TV_UPSTREAM || resolve(directory, '.vendor/tradingview-mcp'));
@@ -57,14 +58,11 @@ for (const name of allowed) {
 }
 const { jsonResult } = await load('tools/_format.js');
 const chart = await load('core/chart.js');
+const connection = await load('connection.js');
 const ui = await load('core/ui.js');
 server.tool('tv_health_check', 'Read-only check of the local TradingView chart connection; no update check or app restart.', {}, async () => {
-  try {
-    const state = await chart.getState();
-    return jsonResult({ ...state, cdp_connected: true, endpoint: '127.0.0.1:9222', limited_adapter: true });
-  } catch (error) {
-    return jsonResult({ success: false, error: error.message, hint: 'Save and close TradingView, then run START_TRADINGVIEW_MCP.ps1. No automatic forced restart.' }, true);
-  }
+  const state = await chartHealth(connection, chart);
+  return jsonResult(state, !state.cdp_connected);
 });
 server.tool('pine_editor_open', 'Open the Pine editor only; no trading or broker panel access.', {}, async () => {
   try { return jsonResult(await ui.openPanel({ panel: 'pine-editor', action: 'open' })); }

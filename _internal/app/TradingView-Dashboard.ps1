@@ -10,6 +10,7 @@ $taskLog = Join-Path $taskSession 'mcp.log'
 $taskStartupLog = Join-Path $taskSession 'startup.log'
 $script:taskStarter = $null
 $script:taskMonitor = $null
+$script:taskMonitorStarted = [DateTime]::MinValue
 $taskPowerShell = Join-Path $PSHOME 'powershell.exe'
 if (!(Test-Path -LiteralPath $taskPowerShell)) { $taskPowerShell = (Get-Command powershell.exe).Source }
 foreach ($taskFile in @('mcp-server.mjs','START_TRADINGVIEW_MCP.ps1')) {
@@ -61,10 +62,23 @@ function Start-TaskDesktop {
     $script:taskStarter = Start-TaskHiddenCommand $taskCommand
 }
 function Start-TaskMonitor {
+    if ($script:taskMonitor -and !$script:taskMonitor.HasExited) { return }
     $taskCommand = '& ' + (Convert-TaskLiteral $taskNode) + ' ' + (Convert-TaskLiteral (Join-Path $PSScriptRoot 'dashboard-monitor.mjs')) + ' ' + (Convert-TaskLiteral $BridgeRoot) + ' ' + (Convert-TaskLiteral $taskStatus) + ' *> ' + (Convert-TaskLiteral $taskLog) + '; exit $LASTEXITCODE'
     $script:taskMonitor = Start-TaskHiddenCommand $taskCommand
+    $script:taskMonitorStarted = [DateTime]::UtcNow
 }
-$taskControls.Start.Add_Click({ Start-TaskDesktop })
+$taskControls.Start.Add_Click({ Start-TaskDesktop; Start-TaskMonitor })
+function Read-TaskStatus {
+    $taskStream = $null
+    $taskReader = $null
+    try {
+        $taskStream = [IO.File]::Open($taskStatus, [IO.FileMode]::Open, [IO.FileAccess]::Read, ([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+        $taskReader = [IO.StreamReader]::new($taskStream)
+        return ($taskReader.ReadToEnd() | ConvertFrom-Json)
+    } finally {
+        if ($taskReader) { $taskReader.Dispose() } elseif ($taskStream) { $taskStream.Dispose() }
+    }
+}
 $taskControls.Logs.Add_Click({ Start-Process explorer.exe -ArgumentList ('"' + $taskSession + '"') })
 $taskTimer = New-Object Windows.Threading.DispatcherTimer
 $taskTimer.Interval = [TimeSpan]::FromSeconds(2)
@@ -73,17 +87,22 @@ $taskTimer.Add_Tick({
         $taskRunning = @(Get-Process -Name TradingView -ErrorAction SilentlyContinue).Count -gt 0
         $taskControls.Desktop.Text = if ($taskRunning) { 'TradingView: running' } else { 'TradingView: closed' }
         $taskState = $null
-        if (Test-Path -LiteralPath $taskStatus) { try { $taskState = Get-Content -LiteralPath $taskStatus -Raw | ConvertFrom-Json } catch {} }
+        if (Test-Path -LiteralPath $taskStatus) { try { $taskState = Read-TaskStatus } catch {} }
         $taskFresh = $taskState -and (([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() - $taskState.updated) -lt 20000) -and !$script:taskMonitor.HasExited
         $taskControls.Bridge.Text = if ($taskFresh -and $taskState.mcp) { "MCP server: active | $($taskState.tools) tools" } else { 'MCP server: waiting / unavailable' }
         $taskActive = $taskFresh -and $taskState.connected
         $taskControls.Connection.Text = if ($taskActive) { 'Chart connection: connected' } else { 'Chart connection: disconnected' }
-        $taskControls.Overall.Text = if ($taskActive) { 'ACTIVE - ready for MCP' } else { 'WAITING - connecting' }
+        $taskStartupFailed = $script:taskStarter -and $script:taskStarter.HasExited -and $script:taskStarter.ExitCode -ne 0
+        $taskChartLoading = $taskFresh -and $taskState.phase -eq 'chart_loading'
+        $taskControls.Overall.Text = if ($taskActive) { 'ACTIVE - ready for MCP' } elseif ($taskStartupFailed) { 'TradingView could not start - see details below' } elseif ($taskChartLoading) { 'Open a TradingView chart - connection is automatic' } else { 'Connecting to TradingView ...' }
         $taskControls.Overall.Foreground = if ($taskActive) { '#70DFAB' } else { '#F4C46A' }
         $taskLines = @()
         if ($taskFresh) { $taskLines += $taskState.message }
         if ($script:taskStarter -and $script:taskStarter.HasExited -and $script:taskStarter.ExitCode -ne 0) { $taskLines += 'TradingView startup failed. Open Logs for details.' }
-        if ($script:taskMonitor.HasExited) { $taskLines += 'MCP monitor stopped. Restart this dashboard. See Logs for details.' }
+        if ($script:taskMonitor -and $script:taskMonitor.HasExited) {
+            $taskLines += 'Reconnecting the MCP monitor automatically...'
+            if (([DateTime]::UtcNow - $script:taskMonitorStarted).TotalSeconds -ge 5) { Start-TaskMonitor }
+        }
         if ($script:taskStarter -and !$script:taskStarter.HasExited -and $taskRunning -and !$taskActive) { $taskLines += 'If TradingView was already running without MCP: save your work and close TradingView normally. The launcher will restart it automatically.' }
         $taskControls.Details.Text = $taskLines -join "`r`n"
     } catch { $taskControls.Details.Text = $_.Exception.Message }
@@ -93,7 +112,9 @@ $taskWindow.Add_Closed({
     Set-Content -LiteralPath ($taskStatus + '.stop') -Value 'stop'
     if ($script:taskStarter -and !$script:taskStarter.HasExited) { Stop-Process -Id $script:taskStarter.Id -ErrorAction SilentlyContinue }
 })
-if (!$NoAutoStart) { Start-TaskDesktop }
-Start-TaskMonitor
-$taskTimer.Start()
+$taskWindow.Add_ContentRendered({
+    if (!$NoAutoStart) { Start-TaskDesktop }
+    Start-TaskMonitor
+    $taskTimer.Start()
+})
 $taskWindow.ShowDialog() | Out-Null
